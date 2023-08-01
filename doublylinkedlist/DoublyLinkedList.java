@@ -2,36 +2,38 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package linkedlist;
+package doublylinkedlist;
 
 /**
  *
  * @author levan
  */
-public class LinkedList {
+public class DoublyLinkedList {
     private Node head;
     private Node tail;
     private int length;
     
-    class Node {
-        int value;
-        Node next;
-        
-        Node(int value) {
-            this.value = value;
-        }
-    }
-    
-    public LinkedList(int value) {
+    public DoublyLinkedList(int value) {
         Node newNode = new Node(value);
         head = newNode;
         tail = newNode;
         length = 1;
     }
     
+    class Node {
+        int value;
+        Node next;
+        Node prev;
+        
+        Node(int value) {
+            this.value = value;
+        }
+        
+    }
+    
     public void printList() {
         Node temp = head;
-        while(temp != null) {
+        while(temp != null){
             System.out.println(temp.value);
             temp = temp.next;
         }
@@ -45,43 +47,42 @@ public class LinkedList {
             length++;
             return;
         }
+        
         tail.next = newNode;
+        newNode.prev = tail;
         tail = newNode;
         length++;
     }
     
-    
-    public Node removeLast(){
+    public Node removeLast() {
         if(length == 0) return null;
-        Node temp = head;
-        Node prev = head;
-        while(temp.next != null) {
-            prev = temp;
-            temp = temp.next;
-        }
         
-        tail = prev;
-        tail.next = null;
-        length--;
-        if(length == 0) {
+        Node temp = tail;
+        if(length == 1) {
             head = null;
             tail = null;
+            length--;
+            return temp;
         }
         
+        tail = tail.prev;
+        tail.next = null;
+        temp.prev = null;
+        length--;
         return temp;
     }
     
     public void prepend(int value) {
         Node newNode = new Node(value);
-        
-        if(length == 0){
+        if(length == 0) {
             head = newNode;
             tail = newNode;
             length++;
             return;
         }
-   
+        
         newNode.next = head;
+        head.prev = newNode;
         head = newNode;
         length++;
     }
@@ -89,25 +90,40 @@ public class LinkedList {
     public Node removeFirst() {
         if(length == 0) return null;
         Node temp = head;
+        if(length == 1) {
+            head = null;
+            tail = null;
+            length--;
+            return temp;
+        }
+        
         head = head.next;
+        head.prev = null;
         temp.next = null;
         length--;
-        if(length == 0) tail = null;
-        
         return temp;
     }
     
     public Node get(int index) {
         if(index < 0 || index >= length) return null;
-        Node temp = head;
-        for(int i = 0; i < index; i++){
-            temp = temp.next;
+        if(index < (length / 2)) {
+            Node temp = head;
+            for(int i = 0; i < index; i++){
+                temp = temp.next;
+            }
+            
+            return temp;
+        }
+        
+        Node temp = tail;
+        for(int i = length - 1; i > index; i--){
+            temp = temp.prev;
         }
         
         return temp;
     }
     
-    public boolean set(int index, int value) {
+    public boolean set(int index, int value){
         Node temp = get(index);
         if(temp != null) {
             temp.value = value;
@@ -129,40 +145,29 @@ public class LinkedList {
         }
         
         Node newNode = new Node(value);
-        Node temp = get(index - 1);
-        newNode.next = temp.next;
-        temp.next = newNode;
-        length++;
+        Node before = get(index - 1);
+        Node after = before.next;
         
+        newNode.prev = before;
+        newNode.next = after;
+        before.next = newNode;
+        after.prev = newNode;
+        length++;
         return true;
-    };
+    }
     
     public Node remove(int index) {
         if(index < 0 || index >= length) return null;
         if(index == 0) return removeFirst();
         if(index == length - 1) return removeLast();
         
-        Node prev = get(index - 1);
-        Node temp = prev.next;
-        
-        prev.next = temp.next;
+        Node temp = get(index);
+        temp.next.prev = temp.prev;
+        temp.prev.next = temp.next;
         temp.next = null;
+        temp.prev = null;
         length--;
-        return temp;
-    };
-    
-    public void reverser() {
-        Node temp = head;
-        head = tail;
-        tail = temp;
         
-        Node after = temp.next;
-        Node before = null;
-        for(int i = 0; i < length; i++) {
-            after = temp.next;
-            temp.next = before;
-            before = temp;
-            temp = after;
-        }
+        return temp;
     }
 }
