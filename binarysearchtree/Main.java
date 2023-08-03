@@ -22,15 +22,11 @@ public class Main {
         myBST.insert(80);
         myBST.insert(83);
 
-        
-        System.out.println(myBST.root.right.right.value);
-        System.out.println(myBST.contains(76));
 
-        myBST.deleteNode(76);
-        System.out.println(myBST.contains(76));
-        System.out.println(myBST.root.right.value);
-
-        
+        System.out.println(myBST.BFS());
+        System.out.println(myBST.DFSPreOrder());
+        System.out.println(myBST.DFSPostOrder());
+        System.out.println(myBST.DFSInOrder());
 
     }
 }

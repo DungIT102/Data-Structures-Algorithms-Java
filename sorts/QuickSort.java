@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class QuickSort {
     private static void swap(int[] array, int firstIndex, int secondIndex) {
         if(firstIndex == secondIndex) return;
+        
         int temp = array[firstIndex];
         array[firstIndex] = array[secondIndex];
         array[secondIndex] = temp;
